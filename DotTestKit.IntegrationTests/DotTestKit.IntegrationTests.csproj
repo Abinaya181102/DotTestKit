@@ -24,7 +24,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="C:\\Users\\abinayasundari.param\\Documents\\OMS-API\\OMS-API.csproj" />
+		<ProjectReference Include="C:\\Users\\abinayasundari.param\\Documents\\DotTestKit-GitHub\\OMS-API\\OMS-API.csproj" />
 	</ItemGroup>
 	<ItemGroup>
     <Using Include="Xunit" />

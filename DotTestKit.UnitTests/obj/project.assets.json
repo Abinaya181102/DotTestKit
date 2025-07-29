@@ -10125,8 +10125,8 @@
     },
     "OMS-API/1.0.0": {
       "type": "project",
-      "path": "../../OMS-API/OMS-API.csproj",
-      "msbuildProject": "../../OMS-API/OMS-API.csproj"
+      "path": "../OMS-API/OMS-API.csproj",
+      "msbuildProject": "../OMS-API/OMS-API.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -10174,8 +10174,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\abinayasundari.param\\Documents\\OMS-API\\OMS-API.csproj": {
-              "projectPath": "C:\\Users\\abinayasundari.param\\Documents\\OMS-API\\OMS-API.csproj"
+            "C:\\Users\\abinayasundari.param\\Documents\\DotTestKit-GitHub\\OMS-API\\OMS-API.csproj": {
+              "projectPath": "C:\\Users\\abinayasundari.param\\Documents\\DotTestKit-GitHub\\OMS-API\\OMS-API.csproj"
             }
           }
         }
