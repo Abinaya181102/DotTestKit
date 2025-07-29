@@ -37,7 +37,7 @@ jobs:
         reportgenerator -reports:"$coverageFile" -targetdir:"CoverageReport" -reporttypes:Html
 
     - name: Upload HTML Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-coverage-report
         path: CoverageReport
