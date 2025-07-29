@@ -23,7 +23,7 @@ jobs:
       run: dotnet restore
 
     - name: Run tests with coverage
-      run: dotnet test --collect:"XPlat Code Coverage"
+      run: dotnet test DotTestKit.UnitTests/DotTestKit.UnitTests.csproj --collect:"XPlat Code Coverage"
 
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
