@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2F0F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{7314F810-ABF8-476D-8737-AB83224CB38B}"
 	ProjectSection(SolutionItems) = preProject
-		dottestkit-ci.yml = dottestkit-ci.yml
+		test-and-coverage.yml = test-and-coverage.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMS-API", "..\OMS-API\OMS-API.csproj", "{641F50F3-F85E-0D38-151D-70238403C8F4}"
