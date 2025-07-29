@@ -1,4 +1,4 @@
-name: Run Tests and Generate Coverage Report
+name: Run Tests and Upload to SonarQube
 
 on:
   push:
@@ -7,8 +7,12 @@ on:
     branches: [ main, abi ]
 
 jobs:
-  test-and-report:
+  sonar-analysis:
     runs-on: windows-latest
+
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: http://localhost:9000
 
     steps:
     - name: Checkout code
@@ -31,7 +35,7 @@ jobs:
     - name: Add ReportGenerator to PATH
       run: echo "$HOME/.dotnet/tools" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
 
-    - name: Generate HTML report
+    - name: Generate coverage report
       run: |
         $coverageFile = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml" | Select-Object -First 1
         reportgenerator -reports:"$coverageFile" -targetdir:"CoverageReport" -reporttypes:Html
@@ -41,3 +45,15 @@ jobs:
       with:
         name: code-coverage-report
         path: CoverageReport
+
+    - name: Install SonarScanner
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Begin SonarQube analysis
+      run: dotnet sonarscanner begin /k:"DotTestKit" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml"
+
+    - name: Build the project
+      run: dotnet build --no-incremental
+
+    - name: End SonarQube analysis
+      run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
