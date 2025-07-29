@@ -1,0 +1,43 @@
+name: Run Tests and Generate Coverage Report
+
+on:
+  push:
+    branches: [ main, abi ]
+  pull_request:
+    branches: [ main, abi ]
+
+jobs:
+  test-and-report:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Run tests with coverage
+      run: dotnet test --collect:"XPlat Code Coverage"
+
+    - name: Install ReportGenerator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+    - name: Add ReportGenerator to PATH
+      run: echo "$HOME/.dotnet/tools" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
+
+    - name: Generate HTML report
+      run: |
+        $coverageFile = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml" | Select-Object -First 1
+        reportgenerator -reports:"$coverageFile" -targetdir:"CoverageReport" -reporttypes:Html
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report
+        path: CoverageReport
