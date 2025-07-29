@@ -2,9 +2,9 @@ name: Run Tests and Generate Coverage Report
 
 on:
   push:
-    branches: [ abi ]
+    branches: [ main, abi ]
   pull_request:
-    branches: [ abi ]
+    branches: [ main, abi ]
 
 jobs:
   test-and-report:
