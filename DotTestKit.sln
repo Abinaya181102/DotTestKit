@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotTestKit.UnitTests", "DotTestKit.UnitTests\DotTestKit.UnitTests.csproj", "{B68DFC88-D002-427B-A2E9-DF7FFDCC00BB}"
 	ProjectSection(ProjectDependencies) = postProject
-		{641F50F3-F85E-0D38-151D-70238403C8F4} = {641F50F3-F85E-0D38-151D-70238403C8F4}
+		{4925742D-AC06-B497-CD4F-0EDBF91D6CFC} = {4925742D-AC06-B497-CD4F-0EDBF91D6CFC}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotTestKit.IntegrationTests", "DotTestKit.IntegrationTests\DotTestKit.IntegrationTests.csproj", "{8D612911-79B9-4BCB-B602-E848A5BD4D30}"
@@ -17,12 +17,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		test-and-coverage.yml = test-and-coverage.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMS-API", "..\OMS-API\OMS-API.csproj", "{641F50F3-F85E-0D38-151D-70238403C8F4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMS-API", "OMS-API\OMS-API.csproj", "{4925742D-AC06-B497-CD4F-0EDBF91D6CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,10 @@ Global
 		{8D612911-79B9-4BCB-B602-E848A5BD4D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D612911-79B9-4BCB-B602-E848A5BD4D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D612911-79B9-4BCB-B602-E848A5BD4D30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{641F50F3-F85E-0D38-151D-70238403C8F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{641F50F3-F85E-0D38-151D-70238403C8F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{641F50F3-F85E-0D38-151D-70238403C8F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{641F50F3-F85E-0D38-151D-70238403C8F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4925742D-AC06-B497-CD4F-0EDBF91D6CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4925742D-AC06-B497-CD4F-0EDBF91D6CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4925742D-AC06-B497-CD4F-0EDBF91D6CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4925742D-AC06-B497-CD4F-0EDBF91D6CFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

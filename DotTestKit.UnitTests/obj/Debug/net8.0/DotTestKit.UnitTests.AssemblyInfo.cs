@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DotTestKit.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+056ae578079a786ee4d4d559527f8baef647f2a4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d8f086ffdea1a7a6f8b09cec94880f2ee5db83f")]
 [assembly: System.Reflection.AssemblyProductAttribute("DotTestKit.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DotTestKit.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

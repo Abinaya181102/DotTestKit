@@ -35,7 +35,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="C:\\Users\\abinayasundari.param\\Documents\\OMS-API\\OMS-API.csproj" />
+		<ProjectReference Include="..\OMS-API\OMS-API.csproj" />
 	</ItemGroup>
 
 </Project>

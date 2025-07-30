@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DotTestKit.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+056ae578079a786ee4d4d559527f8baef647f2a4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8be497671373e9d4e162a80f6ebd066914938732")]
 [assembly: System.Reflection.AssemblyProductAttribute("DotTestKit.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DotTestKit.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
