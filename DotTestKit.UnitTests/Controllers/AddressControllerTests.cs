@@ -306,7 +306,7 @@ namespace DotTestKit.UnitTests.Controllers
             // Act
             var result = _controller.GetAddress(1);
 
-            // Asserts
+            // Assert
             result.Result.Should().BeOfType<NotFoundResult>();
         }
 
