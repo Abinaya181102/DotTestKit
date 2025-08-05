@@ -69,7 +69,7 @@ jobs:
     - name: Run Angular tests with coverage
       working-directory: OMSClient
       run: |
-        npx ng test --no-watch --no-progress --browsers=ChromeHeadless --code-coverage --single-run
+        npx ng test --no-watch --no-progress --browsers=ChromeHeadless --code-coverage -- --single-run
         echo "Angular tests completed."
 
     # 🆕 Upload Angular Coverage Report
