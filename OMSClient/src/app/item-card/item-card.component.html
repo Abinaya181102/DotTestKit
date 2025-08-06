@@ -1,0 +1,30 @@
+<mat-card>
+  <div class="card-header">
+    <mat-card-title>Item Card</mat-card-title>
+    <button mat-mini-fab (click)="deleteItem()" matTooltip="Delete this item">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <mat-card-subtitle>Item Id: {{ item.id }} </mat-card-subtitle>
+  <mat-card-content>
+    <mat-form-field tabindex="1">
+      <input matInput [(ngModel)]="item.name" placeholder="Name" required (focusout)="onItemModified()">
+    </mat-form-field>
+    <mat-form-field tabindex="2">
+      <textarea matInput [(ngModel)]="item.description" placeholder="Description" (focusout)="onItemModified()"></textarea>
+    </mat-form-field>
+    <mat-form-field tabindex="3">
+      <input matInput [(ngModel)]="item.unitPrice" min="0" placeholder="Unit Price" required (focusout)="onItemModified()">
+    </mat-form-field>
+    <mat-form-field tabindex="4">
+      <input matInput [(ngModel)]="item.unitCost" min="0" placeholder="Unit Cost" required (focusout)="onItemModified()">
+    </mat-form-field>
+    <mat-form-field tabindex="5">
+        <mat-select placeholder="Unit Of Measure" [(ngModel)]="item.unitOfMeasureCode">
+            <mat-option *ngFor="let uom of unitsOfMeasure" [value]="uom.code" (focusout)="onItemModified()">
+                {{ uom.code }} - {{ uom.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>

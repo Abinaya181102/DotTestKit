@@ -1,0 +1,26 @@
+<mat-card>
+  <div class="card-header">
+    <mat-card-title> Customer Card </mat-card-title>
+    <button mat-mini-fab
+            matTooltip="Delete this customer"
+            (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <mat-card-subtitle> Id: {{ customer.id }} </mat-card-subtitle>
+  <mat-card-content>
+    <mat-form-field class="half-width">
+      <input matInput [(ngModel)]="customer.name" placeholder="Name" (focusout)="onCustomerModified()" required>
+    </mat-form-field>
+    <mat-card>
+      <mat-card-title>Customer's Addresses</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let address of customer.addresses" (click)="goToAddress(address)" matRipple>
+            <span> {{ address.id }} <mat-divider vertical="true"></mat-divider> {{ address.country }} {{ address.city }} {{ address.postCode }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card>

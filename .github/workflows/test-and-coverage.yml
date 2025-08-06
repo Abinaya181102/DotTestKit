@@ -2,42 +2,81 @@ name: Run Tests and Generate Coverage Report
 
 on:
   push:
-    branches: [ main, abi ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ main, abi ]
+    branches: [ "**" ] 
 
 jobs:
   test-and-report:
     runs-on: windows-latest
 
     steps:
+    # ✅ Checkout repository
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # ✅ Setup .NET
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '7.0.x'
 
+    # ✅ Restore .NET dependencies
     - name: Restore dependencies
       run: dotnet restore
 
+    # ✅ Run .NET tests with coverage
     - name: Run tests with coverage
       run: dotnet test DotTestKit.UnitTests/DotTestKit.UnitTests.csproj --collect:"XPlat Code Coverage"
 
+    # ✅ Install ReportGenerator
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
+    # ✅ Add ReportGenerator to PATH
     - name: Add ReportGenerator to PATH
       run: echo "$HOME/.dotnet/tools" | Out-File -Append -Encoding ascii $env:GITHUB_PATH
 
+    # ✅ Generate HTML report for .NET
     - name: Generate HTML report
       run: |
         $coverageFile = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml" | Select-Object -First 1
-        reportgenerator -reports:"$coverageFile" -targetdir:"CoverageReport" -reporttypes:Html
+        reportgenerator -reports:"$coverageFile" -targetdir:"DotNetCoverageReport" -reporttypes:Html
 
+    # ✅ Upload .NET Coverage Report
     - name: Upload HTML Report
       uses: actions/upload-artifact@v4
       with:
         name: code-coverage-report
-        path: CoverageReport
+        path: DotNetCoverageReport
+
+    # 🆕 -------------------------------
+    # 🆕 Angular Frontend Test & Coverage
+    # 🆕 -------------------------------
+
+    # 🆕 Setup Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # 🆕 Install Angular dependencies
+    - name: Install Angular dependencies
+      working-directory: OMSClient
+      run: npm ci
+
+    # 🆕 Run Angular tests with coverage
+    - name: Run Angular tests with coverage
+      working-directory: OMSClient
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+      run: |
+        npx ng test --code-coverage
+        echo "Angular tests completed."
+
+    # 🆕 Upload Angular Coverage Report
+    - name: Upload Angular Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: angular-code-coverage
+        path: OMSClient/src/coverage/omsclient
