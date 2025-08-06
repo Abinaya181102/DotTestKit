@@ -68,6 +68,8 @@ jobs:
     # 🆕 Run Angular tests with coverage
     - name: Run Angular tests with coverage
       working-directory: OMSClient
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
       run: |
         npx ng test --code-coverage
         echo "Angular tests completed."
