@@ -7,7 +7,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ### 1. Clone the Repository
 
 ```bash
-git clone https://DotTestKit@dev.azure.com/DotTestKit/Order%20Management%20System/_git/Order%20Management%20System
+git clone https://github.com/Abinaya181102/DotTestKit.git
 cd OMSClient
 ```
 
