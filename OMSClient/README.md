@@ -1,27 +1,80 @@
 # OMS
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.0.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 7.1.0.
 
-## Development server
+## Getting Started
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### 1. Clone the Repository
 
-## Code scaffolding
+```bash
+git clone https://DotTestKit@dev.azure.com/DotTestKit/Order%20Management%20System/_git/Order%20Management%20System
+cd OMSClient
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### 2. Install Dependencies
 
-## Build
+```bash
+npm install
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+> This will install Angular CLI, Karma, Jasmine, and other dependencies.
 
-## Running unit tests
+If you got an error installing this, try this command.
+```bash
+npm install --f
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## Running the Application
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```bash
+ng serve
+```
 
-## Further help
+Navigate to: [http://localhost:4200](http://localhost:4200)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+> The app will automatically reload if you make any changes to the source files.
+
+If you got an error running this, run this command and then run `ng serve` again.
+
+```bash
+$env:NODE_OPTIONS="--openssl-legacy-provider"
+```
+
+---
+
+## Running Unit Tests
+
+```bash
+ng test
+```
+
+- **Test Runner:** [Karma](https://karma-runner.github.io/)
+- **Testing Framework:** [Jasmine](https://jasmine.github.io/)
+
+This command will launch a browser and execute all unit tests in watch mode.
+
+If you got an error running this, run this command and then run `ng test` again.
+
+```bash
+$env:NODE_OPTIONS="--openssl-legacy-provider"
+```
+
+---
+
+---
+
+## Running Unit Tests with Code Coverage
+
+```bash
+ng test --code-coverage
+```
+
+- **Code Coverage Tool:** [Istanbul](https://istanbul.js.org/) (via `karma-coverage` plugin)
+- Coverage report will be generated in the `/coverage` folder.
+
+To view the coverage report:
+
+1. Open the file: `coverage/index.html` in your browser.
+2. You'll see color-coded files showing what is and isn’t covered by tests.

@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from "@angular/core/testing";
 import { AddressCardComponent } from "./address-card.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { of } from "rxjs";
@@ -82,7 +87,7 @@ describe("AddressCardComponent", () => {
     expect(component.validate()).toBeFalsy();
   });
 
-  it("should create address when newAddress is true", () => {
+  it("should create address when newAddress is true", fakeAsync(() => {
     component.newAddress = true;
     component.address = {
       country: "IN",
@@ -93,10 +98,11 @@ describe("AddressCardComponent", () => {
     } as any;
     spyOn(component, "validate").and.returnValue(true);
     component.onAddressModified();
+    tick();
     expect(mockDataService.newAddress).toHaveBeenCalled();
-  });
+  }));
 
-  it("should update address when newAddress is false", () => {
+  it("should update address when newAddress is false", fakeAsync(() => {
     component.newAddress = false;
     component.address = {
       country: "IN",
@@ -107,31 +113,35 @@ describe("AddressCardComponent", () => {
     } as any;
     spyOn(component, "validate").and.returnValue(true);
     component.onAddressModified();
+    tick();
     expect(mockDataService.updateAddress).toHaveBeenCalled();
-  });
+  }));
 
-  it("should delete address and navigate", () => {
+  it("should delete address and navigate", fakeAsync(() => {
     component.address = { id: 1 } as any;
     component.deleteAddress();
+    tick();
     expect(mockDataService.deleteAddress).toHaveBeenCalledWith(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(["/Addresses"]);
-  });
+  }));
 
-  it("should show snackbar if getAddress fails", () => {
+  it("should show snackbar if getAddress fails", fakeAsync(() => {
     mockDataService.getAddress.and.returnValue(of({ ok: false }));
     component.setAddressFromApi(2);
+    tick();
     expect(mockSnackBar.open).toHaveBeenCalledWith(
       "Cannot fetch customer with id: 2",
       "OK",
       { duration: 3000 }
     );
-  });
+  }));
 
-  it("should not set customers if getCustomers response is not ok", () => {
+  it("should not set customers if getCustomers response is not ok", fakeAsync(() => {
     mockDataService.getCustomers.and.returnValue(of({ ok: false }));
     component.ngOnInit();
-    expect(component.customers.length).toBe(0); // Should stay empty
-  });
+    tick();
+    expect(component.customers.length).toBe(0);
+  }));
 
   it("should validate correctly with all required fields filled", () => {
     component.address = {
@@ -144,25 +154,27 @@ describe("AddressCardComponent", () => {
     expect(component.validate()).toBeTruthy();
   });
 
-  it("should show error snackbar when createAddress fails", () => {
+  it("should show error snackbar when createAddress fails", fakeAsync(() => {
     mockDataService.newAddress.and.returnValue(of({ ok: false }));
     component.address = { id: 1 } as any;
     component.createAddress();
+    tick();
     expect(mockSnackBar.open).toHaveBeenCalledWith(
       "Cannot create address",
       "OK",
       { duration: 3000 }
     );
-  });
+  }));
 
-  it("should show error snackbar when updateAddress fails", () => {
+  it("should show error snackbar when updateAddress fails", fakeAsync(() => {
     mockDataService.updateAddress.and.returnValue(of({ ok: false }));
     component.address = { id: 1 } as any;
     component.updateAddress();
+    tick();
     expect(mockSnackBar.open).toHaveBeenCalledWith(
       "Cannot update address",
       "OK",
       { duration: 3000 }
     );
-  });
+  }));
 });

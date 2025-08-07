@@ -1,5 +1,5 @@
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\polyfills.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\polyfills.ts
 FNF:0
 FNH:0
 LF:0
@@ -8,7 +8,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\test.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\test.ts
 FNF:0
 FNH:0
 DA:13,1
@@ -20,7 +20,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\data.service.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\data.service.ts
 FN:13,(anonymous_0)
 FN:20,DataService
 FN:22,(anonymous_2)
@@ -170,7 +170,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\address-card\address-card.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\address-card\address-card.component.ts
 FN:13,(anonymous_0)
 FN:17,AddressCardComponent
 FN:24,(anonymous_2)
@@ -284,7 +284,7 @@ BRF:20
 BRH:19
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\address-list\address-list.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\address-list\address-list.component.ts
 FN:12,(anonymous_0)
 FN:15,AddressListComponent
 FN:23,(anonymous_2)
@@ -328,7 +328,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\customer-card\customer-card.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\customer-card\customer-card.component.ts
 FN:14,(anonymous_0)
 FN:17,CustomerCardComponent
 FN:25,(anonymous_2)
@@ -438,7 +438,7 @@ BRF:14
 BRH:14
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\customer-list\customer-list.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\customer-list\customer-list.component.ts
 FN:13,(anonymous_0)
 FN:17,CustomerListComponent
 FN:25,(anonymous_2)
@@ -482,7 +482,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\item-card\item-card.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\item-card\item-card.component.ts
 FN:14,(anonymous_0)
 FN:18,ItemCardComponent
 FN:25,(anonymous_2)
@@ -589,7 +589,7 @@ BRF:16
 BRH:16
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\item-list\item-list.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\item-list\item-list.component.ts
 FN:12,(anonymous_0)
 FN:15,ItemListComponent
 FN:23,(anonymous_2)
@@ -633,7 +633,7 @@ BRF:2
 BRH:2
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\mockData\mock-data.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\mockData\mock-data.ts
 FNF:0
 FNH:0
 DA:11,1
@@ -663,7 +663,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\navbar\navbar.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\navbar\navbar.component.ts
 FN:9,(anonymous_0)
 FN:11,NavbarComponent
 FN:13,(anonymous_2)
@@ -703,7 +703,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\sales-order-card\sales-order-card.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\sales-order-card\sales-order-card.component.ts
 FN:24,(anonymous_0)
 FN:42,SalesOrderCardComponent
 FN:50,(anonymous_2)
@@ -935,7 +935,7 @@ BRF:38
 BRH:22
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\sales-order-list\sales-order-list.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\sales-order-list\sales-order-list.component.ts
 FN:14,(anonymous_0)
 FN:19,SalesOrderListComponent
 FN:27,(anonymous_2)
@@ -993,7 +993,7 @@ BRF:6
 BRH:6
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\unit-of-measure-list\unit-of-measure-list.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\unit-of-measure-list\unit-of-measure-list.component.ts
 FN:11,(anonymous_0)
 FN:15,UnitOfMeasureListComponent
 FN:22,(anonymous_2)
@@ -1047,7 +1047,7 @@ BRF:4
 BRH:3
 end_of_record
 TN:
-SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\final\DotTestKit\OMSClient\src\app\user-confirm\user-confirm.component.ts
+SF:C:\Users\sakthivelu.selvam\Downloads\pSiddhi\semester 2\Final_Dottest_Kit\DotTestKit\OMSClient\src\app\user-confirm\user-confirm.component.ts
 FN:9,(anonymous_0)
 FN:11,UserConfirmComponent
 FN:14,(anonymous_2)
