@@ -55,7 +55,7 @@ jobs:
       working-directory: OMSClient
       env:
         NODE_OPTIONS: --openssl-legacy-provider
-      run:
+      run: |
         npx ng test --code-coverage
         echo "Angular tests completed."
 
