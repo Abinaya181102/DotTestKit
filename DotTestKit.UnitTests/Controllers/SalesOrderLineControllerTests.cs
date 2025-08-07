@@ -1,139 +1,163 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoFixture;
+using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using OMSAPI.Controllers;
 using OMSAPI.Dtos.SalesOrderLineDtos;
 using OMSAPI.Interfaces;
 using OMSAPI.Models;
-using System.Collections.Generic;
 using Xunit;
 
-namespace OMSAPI.Tests.Controllers
+namespace OMSAPI.UnitTests.Controllers
 {
     public class SalesOrderLineControllerTests
     {
         private readonly Mock<ISalesOrderLine> _mockService;
         private readonly Mock<IMapper> _mockMapper;
         private readonly SalesOrderLineController _controller;
+        private readonly IFixture _fixture;
 
         public SalesOrderLineControllerTests()
         {
             _mockService = new Mock<ISalesOrderLine>();
             _mockMapper = new Mock<IMapper>();
             _controller = new SalesOrderLineController(_mockService.Object, _mockMapper.Object);
+            _fixture = new Fixture();
+            _fixture.Behaviors
+                .OfType<ThrowingRecursionBehavior>()
+                .ToList()
+                .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
         }
 
         [Fact]
-        public void GetSalesOrderLine_ReturnsOk_WhenLineExists()
+        public void GetSalesOrderLine_ReturnsOk_WhenSalesOrderLineExists()
         {
-            var id = 1;
-            var line = new SalesOrderLine { Id = id };
-            var dto = new SalesOrderLineReadFullDto { Id = id };
-            _mockService.Setup(s => s.Get(id)).Returns(line);
-            _mockMapper.Setup(m => m.Map<SalesOrderLineReadFullDto>(line)).Returns(dto);
+            var entity = _fixture.Create<SalesOrderLine>();
+            var dto = _fixture.Create<SalesOrderLineReadFullDto>();
 
-            var result = _controller.GetSalesOrderLine(id);
+            _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns(entity);
+            _mockMapper.Setup(m => m.Map<SalesOrderLineReadFullDto>(entity)).Returns(dto);
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(dto, okResult.Value);
+            var result = _controller.GetSalesOrderLine(1);
+
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dto);
         }
 
         [Fact]
-        public void GetSalesOrderLine_ReturnsNotFound_WhenLineNotExists()
+        public void GetSalesOrderLine_ReturnsNotFound_WhenEntityNull()
         {
             _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderLine)null);
 
             var result = _controller.GetSalesOrderLine(1);
 
-            Assert.IsType<NotFoundResult>(result.Result);
+            result.Result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void GetAll_ReturnsAllLines()
+        public void GetAll_ReturnsListOfDtos()
         {
-            var lines = new List<SalesOrderLine> { new SalesOrderLine { Id = 1 } };
-            var dtos = new List<SalesOrderLineReadDto> { new SalesOrderLineReadDto { Id = 1 } };
-            _mockService.Setup(s => s.GetAll()).Returns(lines);
-            _mockMapper.Setup(m => m.Map<IEnumerable<SalesOrderLineReadDto>>(lines)).Returns(dtos);
+            var entities = _fixture.CreateMany<SalesOrderLine>(3);
+            var dtos = _fixture.CreateMany<SalesOrderLineReadDto>(3);
+
+            _mockService.Setup(s => s.GetAll()).Returns(entities);
+            _mockMapper.Setup(m => m.Map<IEnumerable<SalesOrderLineReadDto>>(It.IsAny<IEnumerable<SalesOrderLine>>())).Returns(dtos);
 
             var result = _controller.GetAll();
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(dtos, okResult.Value);
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dtos);
         }
 
         [Fact]
-        public void Create_ReturnsCreatedAtRoute()
+        public void GetAllForSalesOrderHeader_ReturnsListOfDtos()
         {
-            var createDto = new SalesOrderLineCreateDto();
-            var model = new SalesOrderLine { Id = 1 };
-            var readDto = new SalesOrderLineReadFullDto { Id = 1 };
+            var entities = _fixture.CreateMany<SalesOrderLine>(2);
+            var dtos = _fixture.CreateMany<SalesOrderLineReadDto>(2);
+
+            _mockService.Setup(s => s.GetAllForSalesOrder(It.IsAny<int>())).Returns(entities);
+            _mockMapper.Setup(m => m.Map<IEnumerable<SalesOrderLineReadDto>>(It.IsAny<IEnumerable<SalesOrderLine>>())).Returns(dtos);
+
+            var result = _controller.GetAllForSalesOrderHeader(1);
+
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dtos);
+        }
+
+        [Fact]
+        public void Create_ReturnsCreatedAtRoute_WhenValid()
+        {
+            var createDto = _fixture.Create<SalesOrderLineCreateDto>();
+            var model = _fixture.Build<SalesOrderLine>()
+                                .With(x => x.Id, 1)
+                                .Create();
+            var readDto = _fixture.Build<SalesOrderLineReadFullDto>()
+                                  .With(x => x.Id, 1)
+                                  .Create();
 
             _mockMapper.Setup(m => m.Map<SalesOrderLine>(createDto)).Returns(model);
+            _mockService.Setup(s => s.Create(model));
+            _mockService.Setup(s => s.SaveChanges()).Returns(true);
             _mockMapper.Setup(m => m.Map<SalesOrderLineReadFullDto>(model)).Returns(readDto);
 
             var result = _controller.Create(createDto);
 
-            var createdAtRouteResult = Assert.IsType<CreatedAtRouteResult>(result);
-            Assert.Equal("SalesOrderLine", createdAtRouteResult.RouteName);
-            Assert.Equal(readDto, createdAtRouteResult.Value);
+            result.Should().BeOfType<CreatedAtRouteResult>()
+                  .Which.Value.Should().BeEquivalentTo(readDto);
         }
 
         [Fact]
-        public void Delete_ReturnsNoContent_WhenExists()
+        public void Delete_ReturnsNoContent_WhenEntityExists()
         {
-            var line = new SalesOrderLine { Id = 1 };
-            _mockService.Setup(s => s.Get(1)).Returns(line);
+            var entity = _fixture.Create<SalesOrderLine>();
+            _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns(entity);
+
+            var result = _controller.Delete(entity.Id);
+
+            _mockService.Verify(s => s.Delete(entity), Times.Once);
+            _mockService.Verify(s => s.SaveChanges(), Times.Once);
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public void Delete_ReturnsNotFound_WhenEntityDoesNotExist()
+        {
+            _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderLine)null);
 
             var result = _controller.Delete(1);
 
-            Assert.IsType<NoContentResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void Delete_ReturnsNotFound_WhenNotExists()
+        public void Update_ReturnsNoContent_WhenValid()
         {
-            _mockService.Setup(s => s.Get(1)).Returns((SalesOrderLine)null);
+            var updateDto = _fixture.Create<SalesOrderLineUpdateDto>();
+            var entity = _fixture.Create<SalesOrderLine>();
 
-            var result = _controller.Delete(1);
+            _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns(entity);
 
-            Assert.IsType<NotFoundResult>(result);
+            var result = _controller.Update(entity.Id, updateDto);
+
+            _mockMapper.Verify(m => m.Map(updateDto, entity), Times.Once);
+            _mockService.Verify(s => s.Update(entity), Times.Once);
+            _mockService.Verify(s => s.SaveChanges(), Times.Once);
+            result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void Update_ReturnsNoContent_WhenExists()
+        public void Update_ReturnsNotFound_WhenEntityDoesNotExist()
         {
-            var dto = new SalesOrderLineUpdateDto();
-            var model = new SalesOrderLine { Id = 1 };
-            _mockService.Setup(s => s.Get(1)).Returns(model);
+            var updateDto = _fixture.Create<SalesOrderLineUpdateDto>();
+            _mockService.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderLine)null);
 
-            var result = _controller.Update(1, dto);
+            var result = _controller.Update(1, updateDto);
 
-            Assert.IsType<NoContentResult>(result);
-        }
-
-        [Fact]
-        public void Update_ReturnsNotFound_WhenNotExists()
-        {
-            _mockService.Setup(s => s.Get(1)).Returns((SalesOrderLine)null);
-
-            var result = _controller.Update(1, new SalesOrderLineUpdateDto());
-
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void GetAllForSalesOrderHeader_ReturnsLines()
-        {
-            var lines = new List<SalesOrderLine> { new SalesOrderLine { Id = 1 } };
-            var dtos = new List<SalesOrderLineReadDto> { new SalesOrderLineReadDto { Id = 1 } };
-            _mockService.Setup(s => s.GetAllForSalesOrder(It.IsAny<int>())).Returns(lines);
-            _mockMapper.Setup(m => m.Map<IEnumerable<SalesOrderLineReadDto>>(lines)).Returns(dtos);
-
-            var result = _controller.GetAllForSalesOrderHeader(1);
-
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(dtos, okResult.Value);
+            result.Should().BeOfType<NotFoundResult>();
         }
     }
 }

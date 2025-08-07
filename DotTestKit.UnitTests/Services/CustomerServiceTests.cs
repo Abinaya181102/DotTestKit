@@ -1,158 +1,195 @@
-﻿using System;
-using System.Linq;
+﻿//using AutoFixture;
+//using FluentAssertions;
+//using Microsoft.EntityFrameworkCore;
+//using OMSAPI.DataContext;
+//using OMSAPI.Models;
+//using OMSAPI.Services;
+//using OMSAPI.UnitTests.TestHelpers;
+//using System;
+//using System.Linq;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Services
+//{
+//    public class CustomerServiceTests
+//    {
+//        private readonly CustomerService _service;
+//        private readonly Fixture _fixture;
+//        private readonly OMSDbContext _context;
+
+//        public CustomerServiceTests()
+//        {
+//            _context = TestDbContextFactory.CreateInMemoryDbContext();
+//            _service = new CustomerService(_context);
+//            _fixture = new Fixture();
+//        }
+
+//        [Fact]
+//        public void Create_AddsCustomerToContext()
+//        {
+//            var customer = _fixture.Create<Customer>();
+//            _service.Create(customer);
+//            _service.SaveChanges();
+
+//            _context.Customers.Should().Contain(customer);
+//        }
+
+//        [Fact]
+//        public void GetAll_ReturnsAllCustomers()
+//        {
+//            var customer = _fixture.Create<Customer>();
+//            _context.Customers.Add(customer);
+//            _context.SaveChanges();
+
+//            var result = _service.GetAll();
+//            result.Should().Contain(customer);
+//        }
+
+//        [Fact]
+//        public void Get_ReturnsCorrectCustomer()
+//        {
+//            var customer = _fixture.Create<Customer>();
+//            _context.Customers.Add(customer);
+//            _context.SaveChanges();
+
+//            var result = _service.Get(customer.Id);
+//            result.Should().BeEquivalentTo(customer);
+//        }
+
+//        [Fact]
+//        public void Delete_RemovesCustomer()
+//        {
+//            var customer = _fixture.Create<Customer>();
+//            _context.Customers.Add(customer);
+//            _context.SaveChanges();
+
+//            _service.Delete(customer);
+//            _service.SaveChanges();
+
+//            _context.Customers.Should().NotContain(customer);
+//        }
+//    }
+//}
+
+
+using AutoFixture;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OMSAPI.DataContext;
 using OMSAPI.Models;
 using OMSAPI.Services;
+using OMSAPI.UnitTests.TestHelpers;
+using System;
+using System.Linq;
 using Xunit;
 
-namespace DotTestKit.UnitTests.Services
+namespace OMSAPI.UnitTests.Services
 {
     public class CustomerServiceTests
     {
-        private DbContextOptions<OMSDbContext> GetInMemoryDbOptions()
+        private readonly CustomerService _service;
+        private readonly Fixture _fixture;
+        private readonly OMSDbContext _context;
+
+        public CustomerServiceTests()
         {
-            return new DbContextOptionsBuilder<OMSDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Use a new DB for each test
-                .Options;
+            _context = TestDbContextFactory.CreateInMemoryDbContext();
+            _service = new CustomerService(_context);
+            _fixture = new Fixture();
         }
 
         [Fact]
-        public void Create_ShouldAddCustomer()
+        public void Create_AddsCustomerToContext()
         {
-            var options = GetInMemoryDbOptions();
+            var customer = _fixture.Create<Customer>();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new CustomerService(context);
-                var customer = new Customer { Id = 1, Name = "Test Customer" };
+            _service.Create(customer);
+            _service.SaveChanges();
 
-                service.Create(customer);
-                service.SaveChanges();
-
-                var saved = context.Customers.FirstOrDefault(c => c.Id == 1);
-                Assert.NotNull(saved);
-                Assert.Equal("Test Customer", saved.Name);
-            }
+            _context.Customers.Should().ContainEquivalentOf(customer);
         }
 
         [Fact]
-        public void Create_ShouldThrowArgumentNullException_WhenNull()
+        public void Create_ThrowsArgumentNullException_WhenCustomerIsNull()
         {
-            var options = GetInMemoryDbOptions();
+            Action act = () => _service.Create(null!);
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new CustomerService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Create(null));
-            }
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void Get_ShouldReturnCorrectCustomer()
+        public void GetAll_ReturnsAllCustomers()
         {
-            var options = GetInMemoryDbOptions();
+            var customers = _fixture.CreateMany<Customer>(3).ToList();
+            _context.Customers.AddRange(customers);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                context.Customers.Add(new Customer { Id = 2, Name = "GetTest" });
-                context.SaveChanges();
+            var result = _service.GetAll();
 
-                var service = new CustomerService(context);
-                var customer = service.Get(2);
-
-                Assert.NotNull(customer);
-                Assert.Equal("GetTest", customer.Name);
-            }
+            result.Should().BeEquivalentTo(customers);
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllCustomers()
+        public void Get_ReturnsCorrectCustomer_WhenExists()
         {
-            var options = GetInMemoryDbOptions();
+            var customer = _fixture.Create<Customer>();
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                context.Customers.AddRange(
-                    new Customer { Id = 3, Name = "C1" },
-                    new Customer { Id = 4, Name = "C2" }
-                );
-                context.SaveChanges();
+            var result = _service.Get(customer.Id);
 
-                var service = new CustomerService(context);
-                var result = service.GetAll();
-
-                Assert.Equal(2, result.Count());
-            }
+            result.Should().BeEquivalentTo(customer);
         }
 
         [Fact]
-        public void Delete_ShouldRemoveCustomer()
+        public void Get_ReturnsNull_WhenNotExists()
         {
-            var options = GetInMemoryDbOptions();
+            var result = _service.Get(-1);
 
-            using (var context = new OMSDbContext(options))
-            {
-                var customer = new Customer { Id = 5, Name = "ToDelete" };
-                context.Customers.Add(customer);
-                context.SaveChanges();
-
-                var service = new CustomerService(context);
-                service.Delete(customer);
-                service.SaveChanges();
-
-                var result = context.Customers.FirstOrDefault(c => c.Id == 5);
-                Assert.Null(result);
-            }
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void Delete_ShouldThrowArgumentNullException_WhenNull()
+        public void Delete_RemovesCustomer_WhenExists()
         {
-            var options = GetInMemoryDbOptions();
+            var customer = _fixture.Create<Customer>();
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new CustomerService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Delete(null));
-            }
+            _service.Delete(customer);
+            _service.SaveChanges();
+
+            _context.Customers.Should().NotContain(customer);
         }
 
         [Fact]
-        public void Update_ShouldSetModifiedState()
+        public void Delete_ThrowsArgumentNullException_WhenCustomerIsNull()
         {
-            var options = GetInMemoryDbOptions();
+            Action act = () => _service.Delete(null!);
 
-            using (var context = new OMSDbContext(options))
-            {
-                var customer = new Customer { Id = 6, Name = "BeforeUpdate" };
-                context.Customers.Add(customer);
-                context.SaveChanges();
-
-                customer.Name = "AfterUpdate";
-
-                var service = new CustomerService(context);
-                service.Update(customer);
-                service.SaveChanges();
-
-                var updated = context.Customers.Find(6);
-                Assert.Equal("AfterUpdate", updated.Name);
-            }
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void SaveChanges_ShouldReturnTrue()
+        public void Update_ChangesEntityStateToModified()
         {
-            var options = GetInMemoryDbOptions();
+            var customer = _fixture.Create<Customer>();
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new CustomerService(context);
-                context.Customers.Add(new Customer { Id = 7, Name = "SaveCheck" });
+            _service.Update(customer);
+            _context.Entry(customer).State.Should().Be(EntityState.Modified);
+        }
 
-                var result = service.SaveChanges();
-                Assert.True(result);
-            }
+        [Fact]
+        public void SaveChanges_ReturnsTrue_WhenChangesSaved()
+        {
+            var customer = _fixture.Create<Customer>();
+            _context.Customers.Add(customer);
+
+            var result = _service.SaveChanges();
+
+            result.Should().BeTrue();
         }
     }
 }

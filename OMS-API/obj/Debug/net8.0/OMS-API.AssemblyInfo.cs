@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OMS-API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0015d19cc383625d6da565759cffc0886af36f93")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f92052ff1a4020a7288d7877e75b73433f50edcd")]
 [assembly: System.Reflection.AssemblyProductAttribute("OMS-API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OMS-API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

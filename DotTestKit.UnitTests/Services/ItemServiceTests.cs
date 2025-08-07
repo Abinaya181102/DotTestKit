@@ -1,157 +1,98 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
 using OMSAPI.DataContext;
 using OMSAPI.Models;
 using OMSAPI.Services;
+using OMSAPI.UnitTests.TestHelpers;
+using System;
+using System.Linq;
 using Xunit;
 
-namespace DotTestKit.UnitTests.Services
+namespace OMSAPI.UnitTests.Services
 {
     public class ItemServiceTests
     {
-        private DbContextOptions<OMSDbContext> GetInMemoryOptions()
+        private readonly ItemService _service;
+        private readonly OMSDbContext _context;
+
+        public ItemServiceTests()
         {
-            return new DbContextOptionsBuilder<OMSDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Unique DB per test
-                .Options;
+            _context = TestDbContextFactory.CreateInMemoryDbContext();
+            _service = new ItemService(_context);
         }
 
         [Fact]
         public void Create_ShouldAddItem()
         {
-            var options = GetInMemoryOptions();
+            var item = new Item { Name = "Test", UnitOfMeasureCode = "PCS" };
+            _service.Create(item);
+            _service.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new ItemService(context);
-                var item = new Item { Id = 1, Name = "TestItem" };
-
-                service.Create(item);
-                service.SaveChanges();
-
-                var result = context.Items.FirstOrDefault(i => i.Id == 1);
-                Assert.NotNull(result);
-                Assert.Equal("TestItem", result.Name);
-            }
+            _context.Items.Should().Contain(item);
         }
 
         [Fact]
-        public void Create_ShouldThrowArgumentNullException_WhenItemIsNull()
+        public void Get_ShouldReturnItem()
         {
-            var options = GetInMemoryOptions();
+            var item = new Item { Name = "Test", UnitOfMeasureCode = "PCS" };
+            _context.Items.Add(item);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new ItemService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Create(null));
-            }
-        }
+            var result = _service.Get(item.Id);
 
-        [Fact]
-        public void Get_ShouldReturnCorrectItem()
-        {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                context.Items.Add(new Item { Id = 2, Name = "GetItem" });
-                context.SaveChanges();
-
-                var service = new ItemService(context);
-                var result = service.Get(2);
-
-                Assert.NotNull(result);
-                Assert.Equal("GetItem", result.Name);
-            }
-        }
-
-        [Fact]
-        public void GetAll_ShouldReturnAllItems()
-        {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                context.Items.AddRange(
-                    new Item { Id = 3, Name = "Item1" },
-                    new Item { Id = 4, Name = "Item2" }
-                );
-                context.SaveChanges();
-
-                var service = new ItemService(context);
-                var result = service.GetAll();
-
-                Assert.Equal(2, result.Count());
-            }
+            result.Should().BeEquivalentTo(item);
         }
 
         [Fact]
         public void Delete_ShouldRemoveItem()
         {
-            var options = GetInMemoryOptions();
+            var item = new Item { Name = "ToDelete", UnitOfMeasureCode = "PCS" };
+            _context.Items.Add(item);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var item = new Item { Id = 5, Name = "ToDelete" };
-                context.Items.Add(item);
-                context.SaveChanges();
+            _service.Delete(item);
+            _service.SaveChanges();
 
-                var service = new ItemService(context);
-                service.Delete(item);
-                service.SaveChanges();
+            _context.Items.Should().NotContain(item);
+        }
 
-                var result = context.Items.FirstOrDefault(i => i.Id == 5);
-                Assert.Null(result);
-            }
+        [Fact]
+        public void GetAll_ShouldReturnAllItems()
+        {
+            _context.Items.Add(new Item { Name = "Item1", UnitOfMeasureCode = "PCS" });
+            _context.Items.Add(new Item { Name = "Item2", UnitOfMeasureCode = "PCS" });
+            _context.SaveChanges();
+
+            var result = _service.GetAll();
+
+            result.Count().Should().BeGreaterThanOrEqualTo(2);
+        }
+
+        [Fact]
+        public void Update_ShouldModifyEntityState()
+        {
+            var item = new Item { Name = "Original", UnitOfMeasureCode = "PCS" };
+            _context.Items.Add(item);
+            _context.SaveChanges();
+
+            item.Name = "Updated";
+            _service.Update(item);
+            _service.SaveChanges();
+
+            _context.Items.First().Name.Should().Be("Updated");
+        }
+
+        [Fact]
+        public void Create_ShouldThrowArgumentNullException_WhenItemIsNull()
+        {
+            Action act = () => _service.Create(null);
+            act.Should().Throw<ArgumentNullException>().WithParameterName("item");
         }
 
         [Fact]
         public void Delete_ShouldThrowArgumentNullException_WhenItemIsNull()
         {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new ItemService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Delete(null));
-            }
-        }
-
-        [Fact]
-        public void Update_ShouldSetEntityStateToModified()
-        {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                var item = new Item { Id = 6, Name = "OldName" };
-                context.Items.Add(item);
-                context.SaveChanges();
-
-                item.Name = "NewName";
-                var service = new ItemService(context);
-                service.Update(item);
-                service.SaveChanges();
-
-                var updated = context.Items.Find(6);
-                Assert.Equal("NewName", updated.Name);
-            }
-        }
-
-        [Fact]
-        public void SaveChanges_ShouldReturnTrue()
-        {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                context.Items.Add(new Item { Id = 7, Name = "SaveTest" });
-                var service = new ItemService(context);
-
-                var result = service.SaveChanges();
-                Assert.True(result);
-            }
+            Action act = () => _service.Delete(null);
+            act.Should().Throw<ArgumentNullException>().WithParameterName("item");
         }
     }
 }

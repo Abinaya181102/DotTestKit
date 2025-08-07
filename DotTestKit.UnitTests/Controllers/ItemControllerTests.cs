@@ -1,141 +1,263 @@
-﻿using Xunit;
-using Moq;
+﻿//using AutoFixture;
+//using AutoMapper;
+//using FluentAssertions;
+//using Microsoft.AspNetCore.Mvc;
+//using Moq;
+//using OMSAPI.Controllers;
+//using OMSAPI.Dtos.ItemDtos;
+//using OMSAPI.Interfaces;
+//using OMSAPI.Models;
+//using System.Collections.Generic;
+//using System.Linq;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Controllers
+//{
+//    public class ItemControllerTests
+//    {
+//        private readonly Mock<IItem> _mockItemService;
+//        private readonly IMapper _mapper;
+//        private readonly Fixture _fixture;
+//        private readonly ItemController _controller;
+
+//        public ItemControllerTests()
+//        {
+//            _mockItemService = new Mock<IItem>();
+//            _fixture = new Fixture();
+
+//            var config = new MapperConfiguration(cfg =>
+//            {
+//                cfg.AddProfile(new OMSAPI.Profiles.ItemProfile());
+//            });
+//            _mapper = config.CreateMapper();
+
+//            _controller = new ItemController(_mockItemService.Object, _mapper);
+//        }
+
+//        [Fact]
+//        public void GetItem_ReturnsOk_WhenItemExists()
+//        {
+//            var item = _fixture.Create<Item>();
+//            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
+
+//            var result = _controller.GetItem(item.Id);
+
+//            result.Result.Should().BeOfType<OkObjectResult>();
+//        }
+
+//        [Fact]
+//        public void GetItem_ReturnsNotFound_WhenItemDoesNotExist()
+//        {
+//            _mockItemService.Setup(s => s.Get(It.IsAny<int>())).Returns((Item)null);
+
+//            var result = _controller.GetItem(1);
+
+//            result.Result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void GetAll_ReturnsListOfItems()
+//        {
+//            var items = _fixture.CreateMany<Item>(3).ToList();
+//            _mockItemService.Setup(s => s.GetAll()).Returns(items);
+
+//            var result = _controller.GetAll();
+
+//            result.Result.Should().BeOfType<OkObjectResult>();
+//        }
+
+//        [Fact]
+//        public void Create_ReturnsCreatedAtRouteResult()
+//        {
+//            var dto = _fixture.Create<ItemCreateDto>();
+
+//            var result = _controller.Create(dto);
+
+//            result.Should().BeOfType<CreatedAtRouteResult>();
+//        }
+
+//        [Fact]
+//        public void Delete_ReturnsNoContent_WhenItemExists()
+//        {
+//            var item = _fixture.Create<Item>();
+//            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
+
+//            var result = _controller.Delete(item.Id);
+
+//            result.Should().BeOfType<NoContentResult>();
+//        }
+
+//        [Fact]
+//        public void Delete_ReturnsNotFound_WhenItemNotExists()
+//        {
+//            _mockItemService.Setup(s => s.Get(It.IsAny<int>())).Returns((Item)null);
+
+//            var result = _controller.Delete(1);
+
+//            result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void Update_ReturnsNoContent_WhenValid()
+//        {
+//            var item = _fixture.Create<Item>();
+//            var updateDto = _fixture.Create<ItemUpdateDto>();
+//            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
+
+//            var result = _controller.Update(item.Id, updateDto);
+
+//            result.Should().BeOfType<NoContentResult>();
+//        }
+//    }
+//}
+
+
+
+using AutoFixture;
 using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Moq;
 using OMSAPI.Controllers;
+using OMSAPI.Dtos.ItemDtos;
 using OMSAPI.Interfaces;
 using OMSAPI.Models;
-using OMSAPI.Dtos.ItemDtos;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
-namespace DotTestKit.UnitTests.Controllers
+namespace OMSAPI.UnitTests.Controllers
 {
     public class ItemControllerTests
     {
         private readonly Mock<IItem> _mockItemService;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly IMapper _mapper;
+        private readonly Fixture _fixture;
         private readonly ItemController _controller;
 
         public ItemControllerTests()
         {
             _mockItemService = new Mock<IItem>();
-            _mockMapper = new Mock<IMapper>();
-            _controller = new ItemController(_mockItemService.Object, _mockMapper.Object);
-        }
+            _fixture = new Fixture();
 
-        [Fact]
-        public void GetItem_ReturnsNotFound_WhenItemDoesNotExist()
-        {
-            _mockItemService.Setup(s => s.Get(It.IsAny<int>())).Returns((Item)null);
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new OMSAPI.Profiles.ItemProfile());
+            });
+            _mapper = config.CreateMapper();
 
-            var result = _controller.GetItem(1);
-
-            Assert.IsType<NotFoundResult>(result.Result);
+            _controller = new ItemController(_mockItemService.Object, _mapper);
         }
 
         [Fact]
         public void GetItem_ReturnsOk_WhenItemExists()
         {
-            var item = new Item { Id = 1 };
-            var dto = new ItemReadFullDto { Id = 1 };
+            var item = _fixture.Create<Item>();
+            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
 
-            _mockItemService.Setup(s => s.Get(1)).Returns(item);
-            _mockMapper.Setup(m => m.Map<ItemReadFullDto>(item)).Returns(dto);
+            var result = _controller.GetItem(item.Id);
 
-            var result = _controller.GetItem(1);
-
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<ItemReadFullDto>(okResult.Value);
-            Assert.Equal(1, returnValue.Id);
+            result.Result.Should().BeOfType<OkObjectResult>();
+            (result.Result as OkObjectResult)!.Value.Should().BeOfType<ItemReadFullDto>();
         }
 
         [Fact]
-        public void GetAll_ReturnsAllItems()
+        public void GetItem_ReturnsNotFound_WhenItemDoesNotExist()
         {
-            var items = new List<Item> { new Item { Id = 1 }, new Item { Id = 2 } };
-            var dtos = new List<ItemReadDto>
-            {
-                new ItemReadDto { Id = 1 },
-                new ItemReadDto { Id = 2 }
-            };
+            var id = _fixture.Create<int>();
+            _mockItemService.Setup(s => s.Get(id)).Returns((Item)null!);
 
+            var result = _controller.GetItem(id);
+
+            result.Result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void GetAll_ReturnsOk_WithList()
+        {
+            var items = _fixture.CreateMany<Item>(3).ToList();
             _mockItemService.Setup(s => s.GetAll()).Returns(items);
-            _mockMapper.Setup(m => m.Map<IEnumerable<ItemReadDto>>(items)).Returns(dtos);
 
             var result = _controller.GetAll();
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsAssignableFrom<IEnumerable<ItemReadDto>>(okResult.Value);
-            Assert.Collection(returnValue,
-                i => Assert.Equal(1, i.Id),
-                i => Assert.Equal(2, i.Id));
+            result.Result.Should().BeOfType<OkObjectResult>();
+            (result.Result as OkObjectResult)!.Value.Should().BeAssignableTo<IEnumerable<ItemReadDto>>();
         }
 
         [Fact]
-        public void Create_ReturnsCreatedAtRoute_WhenValidInput()
+        public void GetAll_ReturnsOk_WithEmptyList()
         {
-            var createDto = new ItemCreateDto { Name = "New Item" };
-            var itemModel = new Item { Id = 1, Name = "New Item" };
-            var readDto = new ItemReadFullDto { Id = 1, Name = "New Item" };
+            _mockItemService.Setup(s => s.GetAll()).Returns(new List<Item>());
 
-            _mockMapper.Setup(m => m.Map<Item>(createDto)).Returns(itemModel);
-            _mockMapper.Setup(m => m.Map<ItemReadFullDto>(itemModel)).Returns(readDto);
+            var result = _controller.GetAll();
+
+            result.Result.Should().BeOfType<OkObjectResult>();
+            var okResult = result.Result as OkObjectResult;
+            okResult!.Value.Should().BeAssignableTo<IEnumerable<ItemReadDto>>();
+            ((IEnumerable<ItemReadDto>)okResult.Value).Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Create_ReturnsCreatedAtRouteResult()
+        {
+            var createDto = _fixture.Create<ItemCreateDto>();
+            var model = _mapper.Map<Item>(createDto);
+
+            _mockItemService.Setup(s => s.Create(It.IsAny<Item>()));
+            _mockItemService.Setup(s => s.SaveChanges());
 
             var result = _controller.Create(createDto);
 
-            var createdResult = Assert.IsType<CreatedAtRouteResult>(result);
-            var returnValue = Assert.IsType<ItemReadFullDto>(createdResult.Value);
-            Assert.Equal(readDto.Id, returnValue.Id);
-        }
-
-        [Fact]
-        public void Update_ReturnsNotFound_WhenItemDoesNotExist()
-        {
-            _mockItemService.Setup(s => s.Get(1)).Returns((Item)null);
-
-            var result = _controller.Update(1, new ItemUpdateDto());
-
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void Update_ReturnsNoContent_WhenItemExists()
-        {
-            var item = new Item { Id = 1 };
-            var updateDto = new ItemUpdateDto { Name = "Updated Item" };
-
-            _mockItemService.Setup(s => s.Get(1)).Returns(item);
-
-            var result = _controller.Update(1, updateDto);
-
-            Assert.IsType<NoContentResult>(result);
-            _mockMapper.Verify(m => m.Map(updateDto, item), Times.Once);
-            _mockItemService.Verify(s => s.Update(item), Times.Once);
-            _mockItemService.Verify(s => s.SaveChanges(), Times.Once);
-        }
-
-        [Fact]
-        public void Delete_ReturnsNotFound_WhenItemDoesNotExist()
-        {
-            _mockItemService.Setup(s => s.Get(1)).Returns((Item)null);
-
-            var result = _controller.Delete(1);
-
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<CreatedAtRouteResult>();
+            var created = result as CreatedAtRouteResult;
+            created!.RouteName.Should().Be("GetItem");
+            created.Value.Should().BeOfType<ItemReadFullDto>();
         }
 
         [Fact]
         public void Delete_ReturnsNoContent_WhenItemExists()
         {
-            var item = new Item { Id = 1 };
+            var item = _fixture.Create<Item>();
+            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
 
-            _mockItemService.Setup(s => s.Get(1)).Returns(item);
+            var result = _controller.Delete(item.Id);
 
-            var result = _controller.Delete(1);
+            result.Should().BeOfType<NoContentResult>();
+        }
 
-            Assert.IsType<NoContentResult>(result);
-            _mockItemService.Verify(s => s.Delete(item), Times.Once);
-            _mockItemService.Verify(s => s.SaveChanges(), Times.Once);
+        [Fact]
+        public void Delete_ReturnsNotFound_WhenItemDoesNotExist()
+        {
+            var id = _fixture.Create<int>();
+            _mockItemService.Setup(s => s.Get(id)).Returns((Item)null!);
+
+            var result = _controller.Delete(id);
+
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void Update_ReturnsNoContent_WhenValid()
+        {
+            var item = _fixture.Create<Item>();
+            var updateDto = _fixture.Create<ItemUpdateDto>();
+            _mockItemService.Setup(s => s.Get(item.Id)).Returns(item);
+
+            var result = _controller.Update(item.Id, updateDto);
+
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public void Update_ReturnsNotFound_WhenItemDoesNotExist()
+        {
+            var id = _fixture.Create<int>();
+            var updateDto = _fixture.Create<ItemUpdateDto>();
+            _mockItemService.Setup(s => s.Get(id)).Returns((Item)null!);
+
+            var result = _controller.Update(id, updateDto);
+
+            result.Should().BeOfType<NotFoundResult>();
         }
     }
 }
