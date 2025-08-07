@@ -81,6 +81,13 @@ describe("AddressListComponent", () => {
     );
   });
 
+  it("should set addressData and assign sort on successful getAddresses", () => {
+    fixture.detectChanges(); // triggers ngOnInit
+
+    expect(component.addressData.data).toEqual(dummyAddresses);
+    expect(component.addressData.sort).toBe(component.sort);
+  });
+
   it("should apply filter to the datasource", () => {
     component.addressData = new MatTableDataSource(dummyAddresses);
     component.applyFilter("chennai");
@@ -99,14 +106,4 @@ describe("AddressListComponent", () => {
       duration: 3000,
     });
   });
-
-  // it("should set addressData and assign sort on successful getAddresses", () => {
-  //   const mockSort = {} as MatSort;
-  //   component.sort = mockSort;
-
-  //   fixture.detectChanges(); // triggers ngOnInit
-
-  //   expect(component.addressData.data).toEqual(dummyAddresses);
-  //   expect(component.addressData.sort).toBe(mockSort);
-  // });
 });

@@ -116,4 +116,53 @@ describe("AddressCardComponent", () => {
     expect(mockDataService.deleteAddress).toHaveBeenCalledWith(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(["/Addresses"]);
   });
+
+  it("should show snackbar if getAddress fails", () => {
+    mockDataService.getAddress.and.returnValue(of({ ok: false }));
+    component.setAddressFromApi(2);
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      "Cannot fetch customer with id: 2",
+      "OK",
+      { duration: 3000 }
+    );
+  });
+
+  it("should not set customers if getCustomers response is not ok", () => {
+    mockDataService.getCustomers.and.returnValue(of({ ok: false }));
+    component.ngOnInit();
+    expect(component.customers.length).toBe(0); // Should stay empty
+  });
+
+  it("should validate correctly with all required fields filled", () => {
+    component.address = {
+      country: "IN",
+      postCode: "600001",
+      street: "Test Street",
+      buildingNo: "42",
+      id: 1,
+    } as any;
+    expect(component.validate()).toBeTruthy();
+  });
+
+  it("should show error snackbar when createAddress fails", () => {
+    mockDataService.newAddress.and.returnValue(of({ ok: false }));
+    component.address = { id: 1 } as any;
+    component.createAddress();
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      "Cannot create address",
+      "OK",
+      { duration: 3000 }
+    );
+  });
+
+  it("should show error snackbar when updateAddress fails", () => {
+    mockDataService.updateAddress.and.returnValue(of({ ok: false }));
+    component.address = { id: 1 } as any;
+    component.updateAddress();
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      "Cannot update address",
+      "OK",
+      { duration: 3000 }
+    );
+  });
 });
