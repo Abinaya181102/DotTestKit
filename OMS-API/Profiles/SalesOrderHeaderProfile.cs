@@ -1,5 +1,8 @@
 using AutoMapper;
+using OMSAPI.Dtos.AddressDtos;
+using OMSAPI.Dtos.CustomerDtos;
 using OMSAPI.Dtos.SalesOrderHeaderDtos;
+using OMSAPI.Dtos.SalesOrderLineDtos;
 using OMSAPI.Models;
 
 namespace OMSAPI.Profiles

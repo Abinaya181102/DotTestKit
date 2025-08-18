@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "IRd3i10QWJI=",
+  "dgSpecHash": "a7vx+7uuVnA=",
   "success": true,
   "projectFilePath": "C:\\Users\\abinayasundari.param\\Documents\\DotTestKit-GitHub\\DotTestKit.UnitTests\\DotTestKit.UnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\abinayasundari.param\\.nuget\\packages\\autofixture\\4.18.1\\autofixture.4.18.1.nupkg.sha512",
+    "C:\\Users\\abinayasundari.param\\.nuget\\packages\\autofixture.automoq\\4.18.1\\autofixture.automoq.4.18.1.nupkg.sha512",
+    "C:\\Users\\abinayasundari.param\\.nuget\\packages\\autofixture.xunit2\\4.18.1\\autofixture.xunit2.4.18.1.nupkg.sha512",
     "C:\\Users\\abinayasundari.param\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\abinayasundari.param\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\abinayasundari.param\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",

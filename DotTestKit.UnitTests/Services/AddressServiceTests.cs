@@ -1,116 +1,211 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
+//using AutoFixture;
+//using FluentAssertions;
+//using Microsoft.EntityFrameworkCore;
+//using OMSAPI.DataContext;
+//using OMSAPI.Models;
+//using OMSAPI.Services;
+//using OMSAPI.UnitTests.TestHelpers;
+//using System;
+//using System.Linq;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Services
+//{
+//    public class AddressServiceTests
+//    {
+//        private readonly AddressService _service;
+//        private readonly Fixture _fixture;
+//        private readonly OMSDbContext _context;
+
+//        public AddressServiceTests()
+//        {
+//            _context = TestDbContextFactory.CreateInMemoryDbContext();
+//            _service = new AddressService(_context);
+//            _fixture = new Fixture();
+//        }
+
+//        [Fact]
+//        public void Create_AddsAddressToContext()
+//        {
+//            var address = _fixture.Create<Address>();
+//            _service.Create(address);
+//            _service.SaveChanges();
+
+//            _context.Addresses.Should().Contain(address);
+//        }
+
+//        [Fact]
+//        public void GetAll_ReturnsAllAddresses()
+//        {
+//            var address = _fixture.Create<Address>();
+//            _context.Addresses.Add(address);
+//            _context.SaveChanges();
+
+//            var result = _service.GetAll();
+//            result.Should().Contain(address);
+//        }
+
+//        [Fact]
+//        public void Get_ReturnsCorrectAddress()
+//        {
+//            var address = _fixture.Create<Address>();
+//            _context.Addresses.Add(address);
+//            _context.SaveChanges();
+
+//            var result = _service.Get(address.Id);
+//            result.Should().BeEquivalentTo(address);
+//        }
+
+//        [Fact]
+//        public void Delete_RemovesAddress()
+//        {
+//            var address = _fixture.Create<Address>();
+//            _context.Addresses.Add(address);
+//            _context.SaveChanges();
+
+//            _service.Delete(address);
+//            _service.SaveChanges();
+
+//            _context.Addresses.Should().NotContain(address);
+//        }
+//    }
+//}
+
+
+using AutoFixture;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using OMSAPI.DataContext;
 using OMSAPI.Models;
 using OMSAPI.Services;
+using OMSAPI.UnitTests.TestHelpers;
+using System;
+using System.Linq;
 using Xunit;
 
-namespace OMSAPI.Tests
+namespace OMSAPI.UnitTests.Services
 {
     public class AddressServiceTests
     {
-        private DbContextOptions<OMSDbContext> GetInMemoryOptions()
+        private readonly OMSDbContext _context;
+        private readonly AddressService _service;
+        private readonly Fixture _fixture;
+
+        public AddressServiceTests()
         {
-            return new DbContextOptionsBuilder<OMSDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unique DB per test
-                .Options;
+            _context = TestDbContextFactory.CreateInMemoryDbContext();
+            _service = new AddressService(_context);
+            _fixture = new Fixture();
         }
 
         [Fact]
-        public void Create_ShouldAddAddress()
+        public void Create_AddsAddressToContext()
         {
-            var options = GetInMemoryOptions();
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new AddressService(context);
-                var address = new Address { Country = "India", PostCode = "600001", Street = "Main St", BuildingNo = "101", CustomerId = 1 };
+            var address = _fixture.Create<Address>();
 
-                service.Create(address);
-                service.SaveChanges();
+            _service.Create(address);
+            _service.SaveChanges();
 
-                Assert.Equal(1, context.Addresses.Count());
-                Assert.Equal("India", context.Addresses.First().Country);
-            }
+            _context.Addresses.Should().ContainEquivalentOf(address);
         }
 
         [Fact]
-        public void Get_ShouldReturnAddress()
+        public void Create_ThrowsArgumentNullException_WhenAddressIsNull()
         {
-            var options = GetInMemoryOptions();
-            using (var context = new OMSDbContext(options))
-            {
-                var address = new Address { Id = 1, Country = "India", PostCode = "600001", Street = "Main St", BuildingNo = "101", CustomerId = 1 };
-                context.Addresses.Add(address);
-                context.SaveChanges();
+            Action act = () => _service.Create(null!);
 
-                var service = new AddressService(context);
-                var result = service.Get(1);
-
-                Assert.NotNull(result);
-                Assert.Equal("India", result.Country);
-            }
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllAddresses()
+        public void Get_ReturnsCorrectAddress_WhenAddressExists()
         {
-            var options = GetInMemoryOptions();
-            using (var context = new OMSDbContext(options))
-            {
-                context.Addresses.AddRange(
-                    new Address { Country = "India", PostCode = "600001", Street = "Main St", BuildingNo = "101", CustomerId = 1 },
-                    new Address { Country = "USA", PostCode = "10001", Street = "Second St", BuildingNo = "102", CustomerId = 2 }
-                );
-                context.SaveChanges();
+            var address = _fixture.Create<Address>();
+            _context.Addresses.Add(address);
+            _context.SaveChanges();
 
-                var service = new AddressService(context);
-                var results = service.GetAll();
+            var result = _service.Get(address.Id);
 
-                Assert.Equal(2, results.Count());
-            }
+            result.Should().BeEquivalentTo(address);
         }
 
         [Fact]
-        public void GetAllForCustomer_ShouldReturnFilteredAddresses()
+        public void Get_ReturnsNull_WhenAddressDoesNotExist()
         {
-            var options = GetInMemoryOptions();
-            using (var context = new OMSDbContext(options))
-            {
-                context.Addresses.AddRange(
-                    new Address { Country = "India", PostCode = "600001", Street = "Main St", BuildingNo = "101", CustomerId = 1 },
-                    new Address { Country = "USA", PostCode = "10001", Street = "Second St", BuildingNo = "102", CustomerId = 2 }
-                );
-                context.SaveChanges();
-
-                var service = new AddressService(context);
-                var results = service.GetAllForCustomer(1).ToList();
-
-                Assert.Single(results);
-                Assert.Equal("India", results[0].Country);
-            }
+            var result = _service.Get(-1);
+            result.Should().BeNull();
         }
 
+        [Fact]
+        public void GetAll_ReturnsAllAddresses()
+        {
+            var addresses = _fixture.CreateMany<Address>(3).ToList();
+            _context.Addresses.AddRange(addresses);
+            _context.SaveChanges();
+
+            var result = _service.GetAll();
+
+            result.Should().BeEquivalentTo(addresses);
+        }
 
         [Fact]
-        public void Update_ShouldModifyAddress()
+        public void GetAllForCustomer_ReturnsCorrectAddresses()
         {
-            var options = GetInMemoryOptions();
-            using (var context = new OMSDbContext(options))
-            {
-                var address = new Address { Id = 1, Country = "India", PostCode = "600001", Street = "Main St", BuildingNo = "101", CustomerId = 1 };
-                context.Addresses.Add(address);
-                context.SaveChanges();
+            var customerId = 1;
+            var matching = _fixture.Build<Address>().With(a => a.CustomerId, customerId).CreateMany(2).ToList();
+            var others = _fixture.Build<Address>().With(a => a.CustomerId, customerId + 1).CreateMany(2).ToList();
 
-                var service = new AddressService(context);
-                address.City = "Chennai";
-                service.Update(address);
-                service.SaveChanges();
+            _context.Addresses.AddRange(matching);
+            _context.Addresses.AddRange(others);
+            _context.SaveChanges();
 
-                var updated = context.Addresses.Find(1);
-                Assert.Equal("Chennai", updated.City);
-            }
+            var result = _service.GetAllForCustomer(customerId);
+
+            result.Should().BeEquivalentTo(matching);
+        }
+
+        [Fact]
+        public void Delete_RemovesAddress_WhenAddressExists()
+        {
+            var address = _fixture.Create<Address>();
+            _context.Addresses.Add(address);
+            _context.SaveChanges();
+
+            _service.Delete(address);
+            _service.SaveChanges();
+
+            _context.Addresses.Should().NotContain(address);
+        }
+
+        [Fact]
+        public void Delete_ThrowsArgumentNullException_WhenAddressIsNull()
+        {
+            Action act = () => _service.Delete(null!);
+
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Update_ChangesEntityStateToModified()
+        {
+            var address = _fixture.Create<Address>();
+            _context.Addresses.Add(address);
+            _context.SaveChanges();
+
+            _service.Update(address);
+            _context.Entry(address).State.Should().Be(EntityState.Modified);
+        }
+
+        [Fact]
+        public void SaveChanges_ReturnsTrue_WhenChangesSaved()
+        {
+            var address = _fixture.Create<Address>();
+            _context.Addresses.Add(address);
+
+            var result = _service.SaveChanges();
+
+            result.Should().BeTrue();
         }
     }
 }

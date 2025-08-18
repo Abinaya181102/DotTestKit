@@ -1,4 +1,5 @@
 using AutoMapper;
+using OMSAPI.Dtos.AddressDtos;
 using OMSAPI.Dtos.CustomerDtos;
 using OMSAPI.Models;
 
@@ -13,6 +14,8 @@ namespace OMSAPI.Profiles
             CreateMap<Customer, CustomerUpdateDto>();
             CreateMap<CustomerUpdateDto, Customer>();
             CreateMap<CustomerCreateDto, Customer>();
+            CreateMap<Customer, CustomerCreateDto>();
+            CreateMap<Address, AddressReadDto>();
         }
     }
 }

@@ -1,140 +1,220 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿
+
+//using FluentAssertions;
+//using OMSAPI.DataContext;
+//using OMSAPI.Models;
+//using OMSAPI.Services;
+//using OMSAPI.UnitTests.TestHelpers;
+//using System.Linq;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Services
+//{
+//    public class UnitOfMeasureServiceTests
+//    {
+//        private readonly UnitOfMeasureService _service;
+//        private readonly OMSDbContext _context;
+
+//        public UnitOfMeasureServiceTests()
+//        {
+//            _context = TestDbContextFactory.CreateInMemoryDbContext();
+//            _service = new UnitOfMeasureService(_context);
+//        }
+
+//        [Fact]
+//        public void Create_ShouldAddUom()
+//        {
+//            var uom = new UnitOfMeasure { Code = "PCS", Name = "Piece" };
+//            _service.Create(uom);
+//            _service.SaveChanges();
+//            _context.UnitsOfMeasure.Should().Contain(uom);
+//        }
+
+//        [Fact]
+//        public void Get_ShouldReturnUom()
+//        {
+//            var uom = new UnitOfMeasure { Code = "KG", Name = "Kilogram" };
+//            _context.UnitsOfMeasure.Add(uom);
+//            _context.SaveChanges();
+//            var result = _service.Get(uom.Code);
+//            result.Should().BeEquivalentTo(uom);
+//        }
+
+//        [Fact]
+//        public void Delete_ShouldRemoveUom()
+//        {
+//            var uom = new UnitOfMeasure { Code = "L", Name = "Liter" };
+//            _context.UnitsOfMeasure.Add(uom);
+//            _context.SaveChanges();
+//            _service.Delete(uom);
+//            _service.SaveChanges();
+//            _context.UnitsOfMeasure.Should().NotContain(uom);
+//        }
+
+//        [Fact]
+//        public void GetAll_ShouldReturnAll()
+//        {
+//            _context.UnitsOfMeasure.Add(new UnitOfMeasure { Code = "G", Name = "Gram" });
+//            _context.UnitsOfMeasure.Add(new UnitOfMeasure { Code = "M", Name = "Meter" });
+//            _context.SaveChanges();
+//            var result = _service.GetAll();
+//            result.Count().Should().BeGreaterThan(1);
+//        }
+
+//        [Fact]
+//        public void Update_ShouldModifyEntity()
+//        {
+//            var uom = new UnitOfMeasure { Code = "BX", Name = "Box" };
+//            _context.UnitsOfMeasure.Add(uom);
+//            _context.SaveChanges();
+
+//            uom.Name = "Updated Box";
+//            _service.Update(uom);
+//            _service.SaveChanges();
+
+//            _context.UnitsOfMeasure.First().Name.Should().Be("Updated Box");
+//        }
+//    }
+//}
+
+
+
+using FluentAssertions;
 using OMSAPI.DataContext;
 using OMSAPI.Models;
 using OMSAPI.Services;
+using OMSAPI.UnitTests.TestHelpers;
+using System;
+using System.Linq;
 using Xunit;
 
-namespace DotTestKit.UnitTests.Services
+namespace OMSAPI.UnitTests.Services
 {
     public class UnitOfMeasureServiceTests
     {
-        private DbContextOptions<OMSDbContext> GetInMemoryOptions()
+        private readonly UnitOfMeasureService _service;
+        private readonly OMSDbContext _context;
+
+        public UnitOfMeasureServiceTests()
         {
-            return new DbContextOptionsBuilder<OMSDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            _context = TestDbContextFactory.CreateInMemoryDbContext();
+            _service = new UnitOfMeasureService(_context);
+        }
+
+        private UnitOfMeasure CreateTestUom(string code = null, string name = null)
+        {
+            return new UnitOfMeasure
+            {
+                Code = code ?? Guid.NewGuid().ToString("N").Substring(0, 4).ToUpper(),
+                Name = name ?? $"Name_{Guid.NewGuid():N}".Substring(0, 8)
+            };
         }
 
         [Fact]
-        public void GetAll_ShouldReturnAllUnits()
+        public void Create_ShouldAddUom()
         {
-            var options = GetInMemoryOptions();
+            var uom = CreateTestUom();
+            _service.Create(uom);
+            _service.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                context.UnitsOfMeasure.AddRange(
-                    new UnitOfMeasure { Code = "KG", Name = "Kilogram" },
-                    new UnitOfMeasure { Code = "L", Name = "Liter" }
-                );
-                context.SaveChanges();
-
-                var service = new UnitOfMeasureService(context);
-                var result = service.GetAll();
-
-                Assert.Equal(2, result.Count());
-            }
+            _context.UnitsOfMeasure.Should().ContainSingle(u => u.Code == uom.Code && u.Name == uom.Name);
         }
 
         [Fact]
-        public void Get_ShouldReturnCorrectUnit()
+        public void Create_ShouldThrow_WhenNull()
         {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                context.UnitsOfMeasure.Add(new UnitOfMeasure { Code = "KG", Name = "Kilogram" });
-                context.SaveChanges();
-
-                var service = new UnitOfMeasureService(context);
-                var unit = service.Get("KG");
-
-                Assert.NotNull(unit);
-                Assert.Equal("KG", unit.Code);
-            }
+            Action act = () => _service.Create(null);
+            act.Should().Throw<ArgumentNullException>().WithParameterName("unitOfMeasure");
         }
 
         [Fact]
-        public void Create_ShouldAddNewUnit()
+        public void Get_ShouldReturnUom_WhenExists()
         {
-            var options = GetInMemoryOptions();
+            var uom = CreateTestUom();
+            _context.UnitsOfMeasure.Add(uom);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new UnitOfMeasureService(context);
-                var newUnit = new UnitOfMeasure { Code = "BOX", Name = "Box" };
+            var result = _service.Get(uom.Code);
 
-                service.Create(newUnit);
-                service.SaveChanges();
-
-                Assert.Single(context.UnitsOfMeasure);
-                Assert.Equal("BOX", context.UnitsOfMeasure.First().Code);
-            }
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(uom);
         }
 
         [Fact]
-        public void Update_ShouldModifyExistingUnit()
+        public void Get_ShouldReturnNull_WhenNotExists()
         {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                var unit = new UnitOfMeasure { Code = "CTN", Name = "Carton" };
-                context.UnitsOfMeasure.Add(unit);
-                context.SaveChanges();
-
-                unit.Name = "Updated Carton";
-                var service = new UnitOfMeasureService(context);
-                service.Update(unit);
-                service.SaveChanges();
-
-                Assert.Equal("Updated Carton", context.UnitsOfMeasure.First().Name);
-            }
+            var result = _service.Get("NON_EXISTENT_CODE");
+            result.Should().BeNull();
         }
 
         [Fact]
-        public void Delete_ShouldRemoveUnit()
+        public void Delete_ShouldRemoveUom()
         {
-            var options = GetInMemoryOptions();
+            var uom = CreateTestUom();
+            _context.UnitsOfMeasure.Add(uom);
+            _context.SaveChanges();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var unit = new UnitOfMeasure { Code = "ML", Name = "Milliliter" };
-                context.UnitsOfMeasure.Add(unit);
-                context.SaveChanges();
+            _service.Delete(uom);
+            _service.SaveChanges();
 
-                var service = new UnitOfMeasureService(context);
-                service.Delete(unit);
-                service.SaveChanges();
-
-                Assert.Empty(context.UnitsOfMeasure);
-            }
+            _context.UnitsOfMeasure.Should().NotContain(u => u.Code == uom.Code);
         }
 
         [Fact]
-        public void Create_ShouldThrowException_WhenNull()
+        public void Delete_ShouldThrow_WhenNull()
         {
-            var options = GetInMemoryOptions();
-
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new UnitOfMeasureService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Create(null));
-            }
+            Action act = () => _service.Delete(null);
+            act.Should().Throw<ArgumentNullException>().WithParameterName("unitOfMeasure");
         }
 
         [Fact]
-        public void Delete_ShouldThrowException_WhenNull()
+        public void GetAll_ShouldReturnAll()
         {
-            var options = GetInMemoryOptions();
+            var uom1 = CreateTestUom();
+            var uom2 = CreateTestUom();
 
-            using (var context = new OMSDbContext(options))
-            {
-                var service = new UnitOfMeasureService(context);
-                Assert.Throws<ArgumentNullException>(() => service.Delete(null));
-            }
+            _context.UnitsOfMeasure.AddRange(uom1, uom2);
+            _context.SaveChanges();
+
+            var result = _service.GetAll();
+
+            result.Should().Contain(u => u.Code == uom1.Code)
+                   .And.Contain(u => u.Code == uom2.Code);
+        }
+
+        [Fact]
+        public void GetAll_ShouldReturnEmpty_WhenNoneExists()
+        {
+            var result = _service.GetAll();
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Update_ShouldModifyEntity()
+        {
+            var uom = CreateTestUom();
+            _context.UnitsOfMeasure.Add(uom);
+            _context.SaveChanges();
+
+            var updatedName = "Updated_" + uom.Name;
+            uom.Name = updatedName;
+
+            _service.Update(uom);
+            _service.SaveChanges();
+
+            _context.UnitsOfMeasure.First().Name.Should().Be(updatedName);
+        }
+
+        [Fact]
+        public void SaveChanges_ShouldReturnTrue_WhenChangesExist()
+        {
+            var uom = CreateTestUom();
+            _context.UnitsOfMeasure.Add(uom);
+
+            var result = _service.SaveChanges();
+
+            result.Should().BeTrue();
         }
     }
 }
+

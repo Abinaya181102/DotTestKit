@@ -1,153 +1,480 @@
-﻿using Xunit;
-using Moq;
+﻿//using AutoFixture;
+//using AutoMapper;
+//using FluentAssertions;
+//using Microsoft.AspNetCore.Mvc;
+//using Moq;
+//using OMSAPI.Controllers;
+//using OMSAPI.Dtos.SalesOrderHeaderDtos;
+//using OMSAPI.Interfaces;
+//using OMSAPI.Models;
+//using System.Collections.Generic;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Controllers
+//{
+//    public class SalesOrderHeaderControllerTests
+//    {
+//        private readonly Mock<ISalesOrderHeader> _serviceMock;
+//        private readonly Mock<IMapper> _mapperMock;
+//        private readonly SalesOrderHeaderController _controller;
+//        private readonly Fixture _fixture;
+
+//        public SalesOrderHeaderControllerTests()
+//        {
+//            _serviceMock = new Mock<ISalesOrderHeader>();
+//            _mapperMock = new Mock<IMapper>();
+//            _controller = new SalesOrderHeaderController(_serviceMock.Object, _mapperMock.Object);
+//            _fixture = new Fixture();
+//            _fixture.Behaviors
+//                .OfType<ThrowingRecursionBehavior>()
+//                .ToList()
+//                .ForEach(b => _fixture.Behaviors.Remove(b));
+//            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+//        }
+
+//        [Fact]
+//        public void GetSalesOrderHeader_ShouldReturnOk_WhenItemExists()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            var dto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(dto);
+
+//            var result = _controller.GetSalesOrderHeader(model.Id);
+//            result.Result.Should().BeOfType<OkObjectResult>()
+//                .Which.Value.Should().BeEquivalentTo(dto);
+//        }
+
+//        [Fact]
+//        public void GetSalesOrderHeader_ShouldReturnNotFound_WhenItemMissing()
+//        {
+//            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns(value: null);
+//            var result = _controller.GetSalesOrderHeader(1);
+//            result.Result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void GetAll_ShouldReturnMappedList()
+//        {
+//            var models = _fixture.CreateMany<SalesOrderHeader>(3);
+//            var dtos = _fixture.CreateMany<SalesOrderHeaderReadDto>(3);
+
+//            _serviceMock.Setup(s => s.GetAll()).Returns(models);
+//            _mapperMock.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(models)).Returns(dtos);
+
+//            var result = _controller.GetAll();
+//            result.Result.Should().BeOfType<OkObjectResult>()
+//                .Which.Value.Should().BeEquivalentTo(dtos);
+//        }
+
+//        [Fact]
+//        public void Create_ShouldReturnCreatedAtRoute()
+//        {
+//            var createDto = _fixture.Create<SalesOrderHeaderCreateDto>();
+//            var model = _fixture.Build<SalesOrderHeader>().Without(x => x.Customer).Without(x => x.Address).Create();
+//            var fullDto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeader>(createDto)).Returns(model);
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(fullDto);
+
+//            var result = _controller.Create(createDto);
+//            result.Should().BeOfType<CreatedAtRouteResult>()
+//                .Which.Value.Should().BeEquivalentTo(fullDto);
+//        }
+
+//        [Fact]
+//        public void Delete_ShouldReturnNoContent_WhenItemExists()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.Delete(model.Id);
+//            result.Should().BeOfType<NoContentResult>();
+//        }
+
+//        [Fact]
+//        public void Delete_ShouldReturnNotFound_WhenItemMissing()
+//        {
+//            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
+//            var result = _controller.Delete(1);
+//            result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void Update_ShouldReturnNoContent_WhenSuccessful()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            var updateDto = _fixture.Create<SalesOrderHeaderUpdateDto>();
+
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+//            _mapperMock.Setup(m => m.Map(updateDto, model));
+
+//            var result = _controller.Update(model.Id, updateDto);
+//            result.Should().BeOfType<NoContentResult>();
+//        }
+
+//        [Fact]
+//        public void UpdateProfit_ShouldReturnUpdatedHeader()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(true);
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.UpdateProfit(model.Id);
+//            result.Value.Should().BeEquivalentTo(model);
+//        }
+
+//        [Fact]
+//        public void UpdateProfit_ShouldSetProfitToZero_OnFailure()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(false);
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.UpdateProfit(model.Id);
+//            result.Value.Profit.Should().Be(0.0m);
+//        }
+//    }
+//}
+
+
+
+
+//using AutoFixture;
+//using AutoMapper;
+//using FluentAssertions;
+//using Microsoft.AspNetCore.Mvc;
+//using Moq;
+//using OMSAPI.Controllers;
+//using OMSAPI.Dtos.SalesOrderHeaderDtos;
+//using OMSAPI.Interfaces;
+//using OMSAPI.Models;
+//using System.Collections.Generic;
+//using System.Linq;
+//using Xunit;
+
+//namespace OMSAPI.UnitTests.Controllers
+//{
+//    public class SalesOrderHeaderControllerTests
+//    {
+//        private readonly Mock<ISalesOrderHeader> _serviceMock;
+//        private readonly Mock<IMapper> _mapperMock;
+//        private readonly SalesOrderHeaderController _controller;
+//        private readonly Fixture _fixture;
+
+//        public SalesOrderHeaderControllerTests()
+//        {
+//            _serviceMock = new Mock<ISalesOrderHeader>();
+//            _mapperMock = new Mock<IMapper>();
+//            _controller = new SalesOrderHeaderController(_serviceMock.Object, _mapperMock.Object);
+//            _fixture = new Fixture();
+//            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+//                .ForEach(b => _fixture.Behaviors.Remove(b));
+//            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+//        }
+
+//        [Fact]
+//        public void GetSalesOrderHeader_ShouldReturnOk_WhenItemExists()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            var dto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(dto);
+
+//            var result = _controller.GetSalesOrderHeader(model.Id);
+//            result.Result.Should().BeOfType<OkObjectResult>()
+//                .Which.Value.Should().BeEquivalentTo(dto);
+//        }
+
+//        [Fact]
+//        public void GetSalesOrderHeader_ShouldReturnNotFound_WhenItemMissing()
+//        {
+//            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
+
+//            var result = _controller.GetSalesOrderHeader(1);
+//            result.Result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void GetAll_ShouldReturnMappedList_WhenItemsExist()
+//        {
+//            var models = _fixture.CreateMany<SalesOrderHeader>(3).ToList();
+//            var dtos = _fixture.CreateMany<SalesOrderHeaderReadDto>(3).ToList();
+//            _serviceMock.Setup(s => s.GetAll()).Returns(models);
+//            _mapperMock.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(models)).Returns(dtos);
+
+//            var result = _controller.GetAll();
+//            result.Result.Should().BeOfType<OkObjectResult>()
+//                .Which.Value.Should().BeEquivalentTo(dtos);
+//        }
+
+//        [Fact]
+//        public void GetAll_ShouldReturnEmptyList_WhenNoItemsExist()
+//        {
+//            var models = new List<SalesOrderHeader>();
+//            var dtos = new List<SalesOrderHeaderReadDto>();
+//            _serviceMock.Setup(s => s.GetAll()).Returns(models);
+//            _mapperMock.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(models)).Returns(dtos);
+
+//            var result = _controller.GetAll();
+//            result.Result.Should().BeOfType<OkObjectResult>()
+//                .Which.Value.Should().BeEquivalentTo(dtos);
+//        }
+
+//        [Fact]
+//        public void Create_ShouldReturnCreatedAtRoute()
+//        {
+//            var createDto = _fixture.Create<SalesOrderHeaderCreateDto>();
+//            var model = _fixture.Build<SalesOrderHeader>().Without(x => x.Customer).Without(x => x.Address).Create();
+//            var fullDto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeader>(createDto)).Returns(model);
+//            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(fullDto);
+
+//            var result = _controller.Create(createDto);
+
+//            var createdAt = result.Should().BeOfType<CreatedAtRouteResult>().Subject;
+//            createdAt.Value.Should().BeEquivalentTo(fullDto);
+//            createdAt.RouteName.Should().Be("GetSalesOrderHeader");
+//            createdAt.RouteValues["id"].Should().Be(fullDto.Id);
+//        }
+
+//        [Fact]
+//        public void Delete_ShouldReturnNoContent_WhenItemExists()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.Delete(model.Id);
+//            result.Should().BeOfType<NoContentResult>();
+//        }
+
+//        [Fact]
+//        public void Delete_ShouldReturnNotFound_WhenItemMissing()
+//        {
+//            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
+
+//            var result = _controller.Delete(123);
+//            result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void Update_ShouldReturnNoContent_WhenSuccessful()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            var updateDto = _fixture.Create<SalesOrderHeaderUpdateDto>();
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.Update(model.Id, updateDto);
+
+//            result.Should().BeOfType<NoContentResult>();
+//            _mapperMock.Verify(m => m.Map(updateDto, model), Times.Once);
+//            _serviceMock.Verify(s => s.Update(model), Times.Once);
+//            _serviceMock.Verify(s => s.SaveChanges(), Times.Once);
+//        }
+
+//        [Fact]
+//        public void Update_ShouldReturnNotFound_WhenItemMissing()
+//        {
+//            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
+//            var updateDto = _fixture.Create<SalesOrderHeaderUpdateDto>();
+
+//            var result = _controller.Update(99, updateDto);
+
+//            result.Should().BeOfType<NotFoundResult>();
+//        }
+
+//        [Fact]
+//        public void UpdateProfit_ShouldReturnUpdatedHeader_WhenSuccessful()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(true);
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.UpdateProfit(model.Id);
+//            result.Value.Should().BeEquivalentTo(model);
+//        }
+
+//        [Fact]
+//        public void UpdateProfit_ShouldSetProfitToZero_WhenFailed()
+//        {
+//            var model = _fixture.Create<SalesOrderHeader>();
+//            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(false);
+//            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+
+//            var result = _controller.UpdateProfit(model.Id);
+//            result.Value.Profit.Should().Be(0.0m);
+//        }
+//    }
+//}
+
+
+
+using AutoFixture;
 using AutoMapper;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Moq;
 using OMSAPI.Controllers;
+using OMSAPI.Dtos.SalesOrderHeaderDtos;
 using OMSAPI.Interfaces;
 using OMSAPI.Models;
-using OMSAPI.Dtos.SalesOrderHeaderDtos;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
-namespace DotTestKit.UnitTests.Controllers
+namespace OMSAPI.UnitTests.Controllers
 {
     public class SalesOrderHeaderControllerTests
     {
-        private readonly Mock<ISalesOrderHeader> _mockService;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<ISalesOrderHeader> _serviceMock;
+        private readonly Mock<IMapper> _mapperMock;
         private readonly SalesOrderHeaderController _controller;
+        private readonly Fixture _fixture;
 
         public SalesOrderHeaderControllerTests()
         {
-            _mockService = new Mock<ISalesOrderHeader>();
-            _mockMapper = new Mock<IMapper>();
-            _controller = new SalesOrderHeaderController(_mockService.Object, _mockMapper.Object);
+            _serviceMock = new Mock<ISalesOrderHeader>();
+            _mapperMock = new Mock<IMapper>();
+            _controller = new SalesOrderHeaderController(_serviceMock.Object, _mapperMock.Object);
+            _fixture = new Fixture();
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => _fixture.Behaviors.Remove(b));
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
         [Fact]
-        public void GetSalesOrderHeader_ReturnsNotFound_WhenNotExists()
+        public void GetSalesOrderHeader_ShouldReturnOk_WhenItemExists()
         {
-            _mockService.Setup(s => s.Get(1)).Returns((SalesOrderHeader)null);
+            var model = _fixture.Create<SalesOrderHeader>();
+            var dto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
+            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(dto);
+
+            var result = _controller.GetSalesOrderHeader(model.Id);
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dto);
+        }
+
+        [Fact]
+        public void GetSalesOrderHeader_ShouldReturnNotFound_WhenItemMissing()
+        {
+            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
 
             var result = _controller.GetSalesOrderHeader(1);
-
-            Assert.IsType<NotFoundResult>(result.Result);
+            result.Result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void GetSalesOrderHeader_ReturnsOk_WhenExists()
+        public void GetAll_ShouldReturnMappedList_WhenItemsExist()
         {
-            var model = new SalesOrderHeader { Id = 1 };
-            var dto = new SalesOrderHeaderReadFullDto { Id = 1 };
-
-            _mockService.Setup(s => s.Get(1)).Returns(model);
-            _mockMapper.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(dto);
-
-            var result = _controller.GetSalesOrderHeader(1);
-
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(dto.Id, ((SalesOrderHeaderReadFullDto)okResult.Value).Id);
-        }
-
-        [Fact]
-        public void GetAll_ReturnsAll()
-        {
-            var list = new List<SalesOrderHeader> { new SalesOrderHeader { Id = 1 } };
-            var dtoList = new List<SalesOrderHeaderReadDto> { new SalesOrderHeaderReadDto { Id = 1 } };
-
-            _mockService.Setup(s => s.GetAll()).Returns(list);
-            _mockMapper.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(list)).Returns(dtoList);
+            var models = _fixture.CreateMany<SalesOrderHeader>(3).ToList();
+            var dtos = _fixture.CreateMany<SalesOrderHeaderReadDto>(3).ToList();
+            _serviceMock.Setup(s => s.GetAll()).Returns(models);
+            _mapperMock.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(models)).Returns(dtos);
 
             var result = _controller.GetAll();
-
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.IsAssignableFrom<IEnumerable<SalesOrderHeaderReadDto>>(okResult.Value);
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dtos);
         }
 
         [Fact]
-        public void Create_ReturnsCreatedAtRoute()
+        public void GetAll_ShouldReturnEmptyList_WhenNoItemsExist()
         {
-            var createDto = new SalesOrderHeaderCreateDto();
-            var model = new SalesOrderHeader { Id = 1 };
-            var fullDto = new SalesOrderHeaderReadFullDto { Id = 1 };
+            var models = new List<SalesOrderHeader>();
+            var dtos = new List<SalesOrderHeaderReadDto>();
+            _serviceMock.Setup(s => s.GetAll()).Returns(models);
+            _mapperMock.Setup(m => m.Map<IEnumerable<SalesOrderHeaderReadDto>>(models)).Returns(dtos);
 
-            _mockMapper.Setup(m => m.Map<SalesOrderHeader>(createDto)).Returns(model);
-            _mockMapper.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(fullDto);
+            var result = _controller.GetAll();
+            result.Result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(dtos);
+        }
+
+        [Fact]
+        public void Create_ShouldReturnCreatedAtRoute()
+        {
+            var createDto = _fixture.Create<SalesOrderHeaderCreateDto>();
+            var model = _fixture.Build<SalesOrderHeader>().Without(x => x.Customer).Without(x => x.Address).Create();
+            var fullDto = _fixture.Create<SalesOrderHeaderReadFullDto>();
+
+            _mapperMock.Setup(m => m.Map<SalesOrderHeader>(createDto)).Returns(model);
+            _mapperMock.Setup(m => m.Map<SalesOrderHeaderReadFullDto>(model)).Returns(fullDto);
 
             var result = _controller.Create(createDto);
 
-            var createdAtRoute = Assert.IsType<CreatedAtRouteResult>(result);
-            Assert.Equal("GetSalesOrderHeader", createdAtRoute.RouteName);
+            var createdAt = result.Should().BeOfType<CreatedAtRouteResult>().Subject;
+            createdAt.Value.Should().BeEquivalentTo(fullDto);
+            createdAt.RouteName.Should().Be("GetSalesOrderHeader");
+            createdAt.RouteValues["id"].Should().Be(fullDto.Id);
         }
 
         [Fact]
-        public void Delete_ReturnsNotFound_WhenNotExists()
+        public void Delete_ShouldReturnNoContent_WhenItemExists()
         {
-            _mockService.Setup(s => s.Get(1)).Returns((SalesOrderHeader)null);
+            var model = _fixture.Create<SalesOrderHeader>();
+            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
 
-            var result = _controller.Delete(1);
-
-            Assert.IsType<NotFoundResult>(result);
+            var result = _controller.Delete(model.Id);
+            result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void Delete_ReturnsNoContent_WhenDeleted()
+        public void Delete_ShouldReturnNotFound_WhenItemMissing()
         {
-            var model = new SalesOrderHeader { Id = 1 };
+            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
 
-            _mockService.Setup(s => s.Get(1)).Returns(model);
-
-            var result = _controller.Delete(1);
-
-            Assert.IsType<NoContentResult>(result);
+            var result = _controller.Delete(123);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void Update_ReturnsNotFound_WhenNotExists()
+        public void Update_ShouldReturnNoContent_WhenSuccessful()
         {
-            _mockService.Setup(s => s.Get(1)).Returns((SalesOrderHeader)null);
+            var model = _fixture.Create<SalesOrderHeader>();
+            var updateDto = _fixture.Create<SalesOrderHeaderUpdateDto>();
+            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
 
-            var result = _controller.Update(1, new SalesOrderHeaderUpdateDto());
+            var result = _controller.Update(model.Id, updateDto);
 
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<NoContentResult>();
+            _mapperMock.Verify(m => m.Map(updateDto, model), Times.Once);
+            _serviceMock.Verify(s => s.Update(model), Times.Once);
+            _serviceMock.Verify(s => s.SaveChanges(), Times.Once);
         }
 
         [Fact]
-        public void Update_ReturnsNoContent_WhenUpdated()
+        public void Update_ShouldReturnNotFound_WhenItemMissing()
         {
-            var model = new SalesOrderHeader { Id = 1 };
+            _serviceMock.Setup(s => s.Get(It.IsAny<int>())).Returns((SalesOrderHeader)null);
+            var updateDto = _fixture.Create<SalesOrderHeaderUpdateDto>();
 
-            _mockService.Setup(s => s.Get(1)).Returns(model);
+            var result = _controller.Update(99, updateDto);
 
-            var result = _controller.Update(1, new SalesOrderHeaderUpdateDto());
-
-            Assert.IsType<NoContentResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void UpdateProfit_ReturnsOrder_WithProfit()
+        public void UpdateProfit_ShouldReturnUpdatedHeader_WhenSuccessful()
         {
-            var model = new SalesOrderHeader { Id = 1, Profit = 500 };
+            var model = _fixture.Create<SalesOrderHeader>();
+            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(true);
+            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
 
-            _mockService.Setup(s => s.UpdateProfit(1)).Returns(true);
-            _mockService.Setup(s => s.Get(1)).Returns(model);
-
-            var result = _controller.UpdateProfit(1);
-
-            var returnValue = Assert.IsType<ActionResult<SalesOrderHeader>>(result);
-            Assert.Equal(500, returnValue.Value.Profit);
+            var result = _controller.UpdateProfit(model.Id);
+            result.Value.Should().BeEquivalentTo(model);
         }
 
         [Fact]
-        public void UpdateProfit_ReturnsOrder_WithZeroProfit_WhenUpdateFails()
+        public void UpdateProfit_ShouldSetProfitToZero_WhenFailed()
         {
-            var model = new SalesOrderHeader { Id = 1 };
+            var model = _fixture.Create<SalesOrderHeader>();
+            _serviceMock.Setup(s => s.UpdateProfit(model.Id)).Returns(false);
+            _serviceMock.Setup(s => s.Get(model.Id)).Returns(model);
 
-            _mockService.Setup(s => s.UpdateProfit(1)).Returns(false);
-            _mockService.Setup(s => s.Get(1)).Returns(model);
-
-            var result = _controller.UpdateProfit(1);
-
-            Assert.Equal(0.0M, result.Value.Profit);
+            var result = _controller.UpdateProfit(model.Id);
+            result.Value.Profit.Should().Be(0.0m);
         }
     }
 }
