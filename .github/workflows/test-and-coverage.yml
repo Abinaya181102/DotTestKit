@@ -2,9 +2,9 @@ name: Run Tests and Generate Coverage Report
 
 on:
   push:
-    branches: [ main, abi ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ main, abi ]
+    branches: [ "**" ] 
 
 jobs:
   test-and-report:
@@ -34,10 +34,33 @@ jobs:
     - name: Generate HTML report
       run: |
         $coverageFile = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml" | Select-Object -First 1
-        reportgenerator -reports:"$coverageFile" -targetdir:"CoverageReport" -reporttypes:Html
+        reportgenerator -reports:"$coverageFile" -targetdir:"DotNetCoverageReport" -reporttypes:Html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v4
       with:
-        name: code-coverage-report
-        path: CoverageReport
+        name: dotnet-code-coverage-report
+        path: DotNetCoverageReport
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Angular dependencies
+      working-directory: OMSClient
+      run: npm ci
+
+    - name: Run Angular tests with coverage
+      working-directory: OMSClient
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
+      run: |
+        npx ng test --code-coverage
+        echo "Angular tests completed."
+
+    - name: Upload Angular Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: angular-code-coverage-report
+        path: OMSClient/src/coverage/omsclient
